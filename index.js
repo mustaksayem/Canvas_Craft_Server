@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion ,ObjectId} = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000
 
@@ -29,12 +29,63 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+   const carftCollection = client.db('carftDB').collection('carfts');
+   
+    app.get('/add',async(req,res)=>{
+      const cursor = carftCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
+
+    app.post('/add',async(req,res)=>{
+
+      const newCarft = req.body;
+      console.log(newCarft);
+      const result = await carftCollection.insertOne(newCarft);
+      res.send(result);
+
+    })
+    app.get("/myCrafts/:email", async (req, res) => {
+      console.log(req.params.email);
+      const result = await carftCollection.find({ email: req.params.email }).toArray();
+      res.send(result)
+    })
+    app.get("/carftsDetails/:id", async (req, res) =>{
+      console.log(req.params.id);
+     const result =  await carftCollection.findOne({_id: new ObjectId(req.params.id), });
+     res.send(result);
+    })
+
+    app.delete("/myCrafts/:id",async (req, res) =>{
+      const result =  await carftCollection.deleteOne({_id: new ObjectId(req.params.id), });
+      res.send(result);
+    })
+
+    app.put("/update/:id", async (req, res) => {
+      const query = { _id: new ObjectId(req.params.id) }
+      const data = {
+          $set: {
+              price: req.body.price,
+              rating:req.body.rating
+          }
+      }
+      const result = await carftCollection.updateOne(query,data)
+      // console.log(result);
+      res.send(result)
+  })
+
+
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
