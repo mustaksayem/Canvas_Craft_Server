@@ -31,12 +31,20 @@ async function run() {
     await client.connect();
 
    const carftCollection = client.db('carftDB').collection('carfts');
+   const subCategoryCollection = client.db("carftDB").collection("subcategory");
    
     app.get('/add',async(req,res)=>{
       const cursor = carftCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
+
+    app.get('/subCategory/:subcategory_Name', async (req, res) => {
+
+      const result = await subCategoryCollection.find({ subcategory_Name: req.params.subcategory_Name }).toArray();
+      res.send(result);
+
+  });
 
 
 
