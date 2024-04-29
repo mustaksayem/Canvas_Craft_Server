@@ -81,7 +81,7 @@ async function run() {
           }
       }
       const result = await carftCollection.updateOne(query,data)
-      // console.log(result);
+      console.log(result);
       res.send(result)
   })
 
