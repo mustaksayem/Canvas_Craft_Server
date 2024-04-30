@@ -46,8 +46,6 @@ async function run() {
 
   });
 
-
-
     app.post('/add',async(req,res)=>{
 
       const newCarft = req.body;
@@ -57,19 +55,19 @@ async function run() {
 
     })
     app.get("/myCrafts/:email", async (req, res) => {
-      // console.log(req.params.email);
+      
       const result = await carftCollection.find({ email: req.params.email }).toArray();
       res.send(result)
     })
     app.get("/carftsDetails/:id", async (req, res) =>{
-      // console.log(req.params.id);
+      
      const result =  await carftCollection.findOne({_id: new ObjectId(req.params.id), });
      res.send(result);
     })
 
 
     app.get("/categoryDetails/:id", async (req, res) =>{
-      // console.log(req.params.id);
+      
      const result =  await subCategoryCollection.findOne({_id: new ObjectId(req.params.id), });
      res.send(result);
     })
